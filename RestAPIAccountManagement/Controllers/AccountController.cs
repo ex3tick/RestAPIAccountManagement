@@ -6,8 +6,8 @@ public class AccountController : Controller
 {
     [HttpGet]
     [Route("Account/login")]
-    public IActionResult Login()
-    {
-        return Ok();
+    public async Task<IActionResult> Login()
+    {string test = "test";
+        return Ok(test);
     }
 }
