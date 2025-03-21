@@ -1,5 +1,6 @@
 using MySql.Data.MySqlClient;
 using RestAPIAccountManagement.Hashing;
+using RestAPIAccountManagement.Models.UserModel;
 
 namespace RestAPIAccountManagement.DAL;
 
@@ -98,10 +99,36 @@ public class AccountDAL
         
     }
     
-    public async Task<bool> InsertAccount()
+    /// <summary>
+    ///  `This method is used to select the account by email
+    /// </summary>
+    /// <param name="userModel"> </param>
+    /// <returns>a</returns>
+    public async Task<bool> InsertUser(UserModel userModel)
     {
-
-        return false;
+        userModel.PasswordHash = HashHelper.HashWithSaltAndPepper(userModel.PasswordHash).Password;
+        try
+        {
+            using (MySqlConnection connection = new MySqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText =
+                        $"INSERT INTO Accounts (Name, Email, PasswordHash, Role) VALUES ('{userModel.Name}', '{userModel.Email}', '{userModel.PasswordHash}', '{userModel.Role}')";
+                    await command.ExecuteNonQueryAsync();
+                    Console.WriteLine("Account inserted");
+                    return true;
+                }
+            }
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error inserting account");
+            Console.WriteLine(e);
+            throw;
+        }
     }
     public async Task<bool> UpdateAccount()
     {
