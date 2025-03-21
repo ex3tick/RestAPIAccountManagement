@@ -1,15 +1,40 @@
+using RestAPIAccountManagement.DAL;
+
 namespace RestAPIAccountManagement;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
+        builder.Services.AddScoped<CreateDatabase>();
+
         var app = builder.Build();
+        
+        using (var scope = app.Services.CreateScope())
+        {
+            try
+            {
+                var createDatabase = scope.ServiceProvider.GetRequiredService<CreateDatabase>();
+                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+                bool success = await createDatabase.StartCreateDatabaseAsync(connectionString);
+                if (!success)
+                {
+                    Console.WriteLine("Error setting up the database.");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error setting up the database: {e.Message}");
+                throw;
+            }
+        }
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())

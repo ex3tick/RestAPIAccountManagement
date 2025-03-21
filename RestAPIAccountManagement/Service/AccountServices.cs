@@ -1,6 +1,6 @@
 namespace RestAPIAccountManagement.Service;
 
-public class AccountServices
+public  class AccountServices
 {
     
 }
