@@ -6,6 +6,8 @@ namespace RestAPIAccountManagement.Hashing;
 
 public class HashHelper
 {
+    public static string Pepper { get; set; }
+    
     /// <summary>
     ///  This method is used to hash the password with the salt and pepper
     /// </summary>
@@ -13,7 +15,7 @@ public class HashHelper
     /// <param name="Salt"></param>
     /// <param name="Pepper"></param>
     /// <returns></returns>
-    public static string HashGenerate(string Password, string Salt, string Pepper)
+    public static string HashGenerate(string Password, string Salt)
     {
         string combinedstring = Password + Salt;
 
@@ -29,7 +31,10 @@ public class HashHelper
         }
         
     }
-    
+    /// <summary>
+    ///  This method is used to generate the salt
+    /// </summary>
+    /// <returns></returns>
     public static string SaltGenerate()
     {
         var rng = RandomNumberGenerator.Create(); 
@@ -39,20 +44,30 @@ public class HashHelper
     }
     
     
-   
-    public static HashSaltModel HashWithSalt(string password)
+   /// <summary>
+   ///  This method is used to hash the password with the salt
+   /// </summary>
+   /// <param name="password"></param>
+   /// <returns></returns>
+    public static HashSaltModel HashWithSaltAndPepper(string password)
     {
     
         HashSaltModel model = new HashSaltModel();
         model.Salt = SaltGenerate();
-        model.Password = HashGenerate(password, model.Salt, "Pepper");
+        model.Password = HashGenerate(password, model.Salt);
         return model;
     }
  
-    
+    /// <summary>
+    ///  This method is used to validate the password
+    /// </summary>
+    /// <param name="password"></param>
+    /// <param name="salt"></param>
+    /// <param name="hashPassword"></param>
+    /// <returns></returns>
     public static bool ValliedatePassword(string password,  string salt, string hashPassword)
     {
-        string hash = HashGenerate(password, salt, "Pepper");
+        string hash = HashGenerate(password, salt);
         return hash == hashPassword;
        
     }

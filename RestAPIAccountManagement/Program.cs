@@ -1,4 +1,5 @@
 using RestAPIAccountManagement.DAL;
+using RestAPIAccountManagement.Hashing;
 
 namespace RestAPIAccountManagement;
 
@@ -7,14 +8,22 @@ public class Program
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        
+        
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
         builder.Services.AddScoped<CreateDatabase>();
-
-        var app = builder.Build();
         
+        var pepper = builder.Configuration.GetValue<string>("Secret:Pepper")?? "Secure Value";
+        HashHelper.Pepper = pepper;
+
+        var conString = builder.Configuration.GetConnectionString("DefaultConnection");
+        AccountDAL.ConnectionString = conString;
+        
+        var app = builder.Build();
+       
         using (var scope = app.Services.CreateScope())
         {
             try
