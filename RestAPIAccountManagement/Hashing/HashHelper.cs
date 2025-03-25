@@ -35,7 +35,7 @@ public class HashHelper
     ///  This method is used to generate the salt
     /// </summary>
     /// <returns></returns>
-    public static string SaltGenerate()
+    public string SaltGenerate()
     {
         var rng = RandomNumberGenerator.Create(); 
         byte[] saltBytes = new byte[16];
@@ -44,19 +44,7 @@ public class HashHelper
     }
     
     
-   /// <summary>
-   ///  This method is used to hash the password with the salt
-   /// </summary>
-   /// <param name="password"></param>
-   /// <returns></returns>
-    public static HashSaltModel HashWithSaltAndPepper(string password)
-    {
-    
-        HashSaltModel model = new HashSaltModel();
-        model.Salt = SaltGenerate();
-        model.Password = HashGenerate(password, model.Salt);
-        return model;
-    }
+
  
     /// <summary>
     ///  This method is used to validate the password
@@ -65,7 +53,7 @@ public class HashHelper
     /// <param name="salt"></param>
     /// <param name="hashPassword"></param>
     /// <returns></returns>
-    public static bool ValliedatePassword(string password,  string salt, string hashPassword)
+    public bool ValliedatePassword(string password,  string salt, string hashPassword)
     {
         string hash = HashGenerate(password, salt);
         return hash == hashPassword;

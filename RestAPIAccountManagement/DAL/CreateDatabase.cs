@@ -47,11 +47,12 @@ namespace RestAPIAccountManagement.DAL
             {
                 using (MySqlConnection connection = new MySqlConnection(connectionStringWithDb))
                 {
+                    //username and poassword can only be once in the database
                     await connection.OpenAsync();
                     using (MySqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText =
-                            "CREATE TABLE IF NOT EXISTS Accounts (Id INT AUTO_INCREMENT PRIMARY KEY, Name VARCHAR(255), Email VARCHAR(255), PasswordHash VARCHAR(255), Role VARCHAR(255))";
+                            "CREATE TABLE IF NOT EXISTS Accounts (Id INT AUTO_INCREMENT PRIMARY KEY, Username VARCHAR(255) UNIQUE,Lastname VARCHAR(255),Firstname VARCHAR(255), Email VARCHAR(255) UNIQUE, PasswordHash VARCHAR(255), Role VARCHAR(255), Salt VARCHAR(255))";
                         await command.ExecuteNonQueryAsync();
                     }
                     Console.WriteLine("Table created successfully or already exists.");
